@@ -13,8 +13,8 @@ Vagrant.configure("2") do |config|
                 config.vm.provision "shell", inline: <<-SHELL                        <----- провижинг, выполнение команд после запуска машины, в данном случае в shell. можно подцепить скрипт
                         mkdir -p ~root/.ssh
                         cp ~vagrant/.ssh/auth* ~root/.ssh
-#                        yum install -y redhat-lsb-core rpmdevtools rpm-build createrepo yum-utils wget
-#                       /vagrant/bash_rpm.sh
+                      #  yum install -y redhat-lsb-core rpmdevtools rpm-build createrepo yum-utils wget
+                      #  /vagrant/bash_rpm.sh
                 SHELL
 		
 end
