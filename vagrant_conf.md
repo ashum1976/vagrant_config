@@ -6,7 +6,7 @@
                         
         Vagrant.configure("2") do |config|
                 config.vm.box = "ashum1976/centos7_kernel_5.10"
-                config.vm.synced_folder ".", "/vagrant", disabled: true
+                config.vm.synced_folder ".", "/vagrant", disabled: true     <--- отключаем проброс папки "./" с хостовой системы в гостевую ( "/vagrant" ) для всех создаваемых машин
                 config.vm.synced_folder "./sync_data", "/home/vagrant/mnt"
                         
     # Провижинг, выполнение команд после запуска машины     
