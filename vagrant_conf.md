@@ -23,7 +23,38 @@
 
 
 
+<details>
+                        <summary> Базовый конфиг вагрант-файла, на несколько машин  </summary>
+        
+        Vagrant.configure(2) do |config|
+            config.vm.box = "ashum1976/centos7_kernel_5.10"
+          #config.vm.box = "centos/7"
+            
 
+            config.vm.provider "virtualbox" do |v|
+                v.memory = 256
+                v.cpus = 1
+            end
+
+            config.vm.define "nfs_server" do |nfss|                                                         <------ задаём параметры box-a  "nfs_server"
+                #nfss.vm.synced_folder "./sync_data_server", "/home/vagrant/mnt"
+                nfss.vm.network "private_network", ip: "192.168.50.10", virtualbox__intnet: "net1"   <----- добавляем ещё сетевую карту с нужным IP
+                nfss.vm.hostname = "nfssrv"                                                                        <-------- Задаём имя нашей создаваемой виртуальной машины hostname
+                nfss.vm.provision "shell", path: "nfss_script.sh"                                            <------ Провижинг используя готовый скрипт, который будет находится в одной папке с Vagrant файлом
+            end
+
+            config.vm.define "nfs_client" do |nfsc|
+                #nfsc.vm.synced_folder "./sync_data_client", "/home/vagrant/mnt"
+                nfsc.vm.network "private_network", ip: "192.168.50.11", virtualbox__intnet: "net1"
+                nfsc.vm.hostname = "nfscln"
+                nfsc.vm.provision "shell", path: "nfsc_script.sh"
+            end
+
+end
+
+
+
+</details>
 
 
 ##                                                              Конфиг параметры
