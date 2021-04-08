@@ -84,10 +84,9 @@ ___
            config.vm.define boxname do |box|
                 box.vm.box = boxconfig[:box_name]
                 box.vm.host_name = boxname.to_s
-#Создадим сетевой интерфейс, внешний, будет доступен на хостовой машине, где тоже создастся сетевой интерфейс
-#из этой же подсети ( 192.168.11.0/24)
-                box.vm.network "private_network", ip: boxconfig[:ip_addr], virtualbox__extnet: "net1"
+>Создадим сетевой интерфейс, внешний, будет доступен на хостовой машине, где тоже создастся сетевой интерфейс из этой же подсети ( 192.168.11.0/24):
 
+                box.vm.network "private_network", ip: boxconfig[:ip_addr], virtualbox__extnet: "net1"
                 box.vm.provider :virtualbox do |vb|
                 vb.customize ["modifyvm", :id, "--memory", "256"]
                 vb.name = boxname.to_s
