@@ -122,8 +122,10 @@ MACHINES = {
               :cpus => 3,
               # VM RAM size (Mb)
               :memory => 2048,
-              # networks
-              :net => [],
+              <!-- # networks
+              :net => {
+                        :ip_addr => 192.168.10.15
+                }, -->
               # forwarded ports
               :forwarded_port => [],
               :sync_path => "./sync_data",
@@ -385,6 +387,4 @@ end
 
     config.vm.synced_folder "scripts/", "/vagrant", type: "rsync", rsync__auto: true, rsync__exclude: ['./hddvm, 'README.md'']
 
-    Пробрасываем папку scripts с хостовой системы, лежащую в папке с
-    Vagrantfile, тип синхронизации rsync, разрешить rsync__auto,
-    исключить каталог hddvm, файл README.md лежащие в той же директории.
+    Пробрасываем папку scripts с хостовой системы, лежащую в папке с Vagrantfile, тип синхронизации rsync, разрешить rsync__auto, исключить каталог hddvm, файл README.md лежащие в той же директории.
