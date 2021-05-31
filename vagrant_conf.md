@@ -112,126 +112,126 @@ ___
 
 **_Использовался в уроке по управлению RAID массивом _**
 
-# Describe VMs
-MACHINES = {
-  # VM name "raid_create"
- :"raid-create" => {
-              # VM box
-              :box_name => "ashum1976/centos7_k5_raid_home",
-              # VM CPU count
-              :cpus => 3,
-              # VM RAM size (Mb)
-              :memory => 2048,
-              <!-- # networks
-              :net => {
-                        :ip_addr => 192.168.10.15
-                }, -->
-              # forwarded ports
-              :forwarded_port => [],
-              :sync_path => "./sync_data",
-              #:sync_path => ,
-              :diskv => {
-                        :sata1 => {
-                                            :dfile => "./hddvm/sata1.vdi",
-                                            :size => 1024,
-                                            :port => 1,
-                                           },
-                        :sata2 => {
-                                            :dfile => "./hddvm/sata2.vdi",
-                                            :size => 1024,
-                                            :port => 2,
-                                            },
-                        :sata3 => {
-                                            :dfile => "./hddvm/sata3.vdi",
-                                            :size => 1024,
-                                            :port => 3,
-                                            },
-                        :sata4 => {
-                                            :dfile => "./hddvm/sata4.vdi",
-                                            :size => 1024,
-                                            :port => 4
-                                            },          
-                         :sata5 => {
-                                            :dfile => "./hddvm/sata5.vdi",
-                                            :size => 1024,
-                                            :port => 5
-                                            },
-                         :sata6 => {
-                                            :dfile => "./hddvm/sata6.vdi",
-                                            :size => 1024,
-                                            :port => 6
-                                            },
-                         :sata7 => {
-                                            :dfile => "./hddvm/sata7.vdi",
-                                            :size => 1024,
-                                            :port => 7
-                                            }
-                                    }
-                                }
-                            }
-Vagrant.configure("2") do |config|
-  MACHINES.each do |boxname, boxconfig|  
-    # Disable shared folders
-                config.vm.synced_folder ".", "/vagrant", disabled: true  # - отключаем проброс папок с хостовой системы в гостевую для всех создаваемых машин, но можем включить
-                # Apply VM config
-                    config.vm.define boxname do |box|
-                        # Set VM base box and hostname
-                                box.vm.box = boxconfig[:box_name]
-                                box.vm.host_name = boxname.to_s
-                        # Additional network config if present
-                                if boxconfig.key? (:net) # - () это наличие такой переменной (значения) в массиве
-                                     boxconfig [:net].each do |etconf, ipconf| # - цикл по значению переменно [:net], т.е :eth1 => { :ipaddr => '192.168.10.15'}
-                                    #     "#{ipconf}" - получить строку находящуюся в переменной ipconf (:ipaddr => '192.168.10.15')
-                                     box.vm.network :private_network, ip: ipconf[:ipaddr]
-                                    end
-                                end
-                        # Port-forward config if present
-                                if boxconfig.key?(:forwarded_port)
-                                    boxconfig[:forwarded_port].each do |port|
-                                    box.vm.network "forwarded_port", port
-                                    end
-                                end
-                        #Включение директорий для проброса с хостовой машины на гостевую
-                                if boxconfig.key?(:sync_path)
-                              #      boxconfig[:sync_path].each do |path|
-                              #      config.vm.synced_folder path
-                                     config.vm.synced_folder boxconfig[:sync_path], "/vagrant"
-                                   end              
+      # Describe VMs
+      MACHINES = {
+        # VM name "raid_create"
+       :"raid-create" => {
+                    # VM box
+                    :box_name => "ashum1976/centos7_k5_raid_home",
+                    # VM CPU count
+                    :cpus => 3,
+                    # VM RAM size (Mb)
+                    :memory => 2048,
+                    <!-- # networks
+                    :net => {
+                              :ip_addr => 192.168.10.15
+                      }, -->
+                    # forwarded ports
+                    :forwarded_port => [],
+                    :sync_path => "./sync_data",
+                    #:sync_path => ,
+                    :diskv => {
+                              :sata1 => {
+                                                  :dfile => "./hddvm/sata1.vdi",
+                                                  :size => 1024,
+                                                  :port => 1,
+                                                 },
+                              :sata2 => {
+                                                  :dfile => "./hddvm/sata2.vdi",
+                                                  :size => 1024,
+                                                  :port => 2,
+                                                  },
+                              :sata3 => {
+                                                  :dfile => "./hddvm/sata3.vdi",
+                                                  :size => 1024,
+                                                  :port => 3,
+                                                  },
+                              :sata4 => {
+                                                  :dfile => "./hddvm/sata4.vdi",
+                                                  :size => 1024,
+                                                  :port => 4
+                                                  },
+                               :sata5 => {
+                                                  :dfile => "./hddvm/sata5.vdi",
+                                                  :size => 1024,
+                                                  :port => 5
+                                                  },
+                               :sata6 => {
+                                                  :dfile => "./hddvm/sata6.vdi",
+                                                  :size => 1024,
+                                                  :port => 6
+                                                  },
+                               :sata7 => {
+                                                  :dfile => "./hddvm/sata7.vdi",
+                                                  :size => 1024,
+                                                  :port => 7
+                                                  }
+                                          }
+                                      }
+                                  }
+      Vagrant.configure("2") do |config|
+        MACHINES.each do |boxname, boxconfig|
+          # Disable shared folders
+                      config.vm.synced_folder ".", "/vagrant", disabled: true  # - отключаем проброс папок с хостовой системы в гостевую для всех создаваемых машин, но можем включить
+                      # Apply VM config
+                          config.vm.define boxname do |box|
+                              # Set VM base box and hostname
+                                      box.vm.box = boxconfig[:box_name]
+                                      box.vm.host_name = boxname.to_s
+                              # Additional network config if present
+                                      if boxconfig.key? (:net) # - () это наличие такой переменной (значения) в массиве
+                                           boxconfig [:net].each do |etconf, ipconf| # - цикл по значению переменно [:net], т.е :eth1 => { :ipaddr => '192.168.10.15'}
+                                          #     "#{ipconf}" - получить строку находящуюся в переменной ipconf (:ipaddr => '192.168.10.15')
+                                           box.vm.network :private_network, ip: ipconf[:ipaddr]
+                                          end
+                                      end
+                              # Port-forward config if present
+                                      if boxconfig.key?(:forwarded_port)
+                                          boxconfig[:forwarded_port].each do |port|
+                                          box.vm.network "forwarded_port", port
+                                          end
+                                      end
+                              #Включение директорий для проброса с хостовой машины на гостевую
+                                      if boxconfig.key?(:sync_path)
+                                    #      boxconfig[:sync_path].each do |path|
+                                    #      config.vm.synced_folder path
+                                           config.vm.synced_folder boxconfig[:sync_path], "/vagrant"
+                                         end
 
-                              #  end
+                                    #  end
 
-                                # VM resources config
-                    box.vm.provider "virtualbox" do |v|
-                        # Set VM RAM size and CPU count
-                                v.memory = boxconfig[:memory]
-                                v.cpus = boxconfig[:cpus]
-                                needsController = false
-                                boxconfig[:diskv].each do |dname, dconf|
-                                            unless File.exist?(dconf[:dfile])
-                                            v.customize ['createhd', '--filename', dconf[:dfile], '--variant', 'Fixed', '--size', dconf[:size]]
-                                            needsController = true
-                                    end
-                                end
+                                      # VM resources config
+                          box.vm.provider "virtualbox" do |v|
+                              # Set VM RAM size and CPU count
+                                      v.memory = boxconfig[:memory]
+                                      v.cpus = boxconfig[:cpus]
+                                      needsController = false
+                                      boxconfig[:diskv].each do |dname, dconf|
+                                                  unless File.exist?(dconf[:dfile])
+                                                  v.customize ['createhd', '--filename', dconf[:dfile], '--variant', 'Fixed', '--size', dconf[:size]]
+                                                  needsController = true
+                                          end
+                                      end
 
-                                if needsController == true
-                                           v.customize ["storagectl", :id, "--name", "SATA", "--add", "sata" ]
-                                           boxconfig[:diskv].each do |dname, dconf|
-                                           v.customize ['storageattach', :id,  '--storagectl', 'SATA', '--port', dconf[:port], '--device', 0, '--type', 'hdd', '--medium',dconf[:dfile]]
-                                     end     
-                                end
-                    end
+                                      if needsController == true
+                                                 v.customize ["storagectl", :id, "--name", "SATA", "--add", "sata" ]
+                                                 boxconfig[:diskv].each do |dname, dconf|
+                                                 v.customize ['storageattach', :id,  '--storagectl', 'SATA', '--port', dconf[:port], '--device', 0, '--type', 'hdd', '--medium',dconf[:dfile]]
+                                           end
+                                      end
+                          end
 
-                    box.vm.provision "shell", inline: <<-SHELL
-                    #          mkdir -p ~root/.ssh
-                    #          cp ~vagrant/.ssh/auth* ~root/.ssh
-                                yum install -y mdadm smartmontools hdparm gdisk
-                                /vagrant/bash.sh
-                                SHELL
+                          box.vm.provision "shell", inline: <<-SHELL
+                          #          mkdir -p ~root/.ssh
+                          #          cp ~vagrant/.ssh/auth* ~root/.ssh
+                                      yum install -y mdadm smartmontools hdparm gdisk
+                                      /vagrant/bash.sh
+                                      SHELL
 
 
-                    end
-    end
-end
+                          end
+          end
+      end
 
 
 </details>
@@ -243,305 +243,145 @@ ___
 <details>
                         <summary> Расширенный конфиг вагрант-файла, на несколько машин, создание  дополнительного диска для одной и отдельный провижинг для одной машины  </summary>
 
-# -*- mode: ruby -*-
-# vim: set ft=ruby :
-MACHINES = {
-  # VM name "srvbackup"
- :"srvbackup" => {
-              # VM box
-              :box_conf => "centos/8",
-              # VM CPU count
-              :cpus => 1,
-              # VM RAM size (Mb)
-              :memory => 2048,
-              # networks
-              :ip_addr => '192.168.10.11',
-              # forwarded ports
-              #:forwarded_port => [],
-              #:sync_path => "./sync_data",
-              #:sync_path => ,
-              :diskv => {
-                        :sata1 => {
-                                    :dfile => './hddvm/sata1.vdi',
-                                    :size => 2048,
-                                    :port => 1
-                                  }
-                        }
-                  },
-  :"client" => {
-              # VM box
-              :box_conf => "centos/8",
-              # VM CPU count
-              :cpus => 1,
-              # VM RAM size (Mb)
-              :memory => 256,
-              # networks
-              :ip_addr => '192.168.10.10'
-            }
-}
+      # -*- mode: ruby -*-
+      # vim: set ft=ruby :
+      MACHINES = {
+        # VM name "srvbackup"
+       :"srvbackup" => {
+                    # VM box
+                    :box_conf => "centos/8",
+                    # VM CPU count
+                    :cpus => 1,
+                    # VM RAM size (Mb)
+                    :memory => 2048,
+                    # networks
+                    :ip_addr => '192.168.10.11',
+                    # forwarded ports
+                    #:forwarded_port => [],
+                    #:sync_path => "./sync_data",
+                    #:sync_path => ,
+                    :diskv => {
+                              :sata1 => {
+                                          :dfile => './hddvm/sata1.vdi',
+                                          :size => 2048,
+                                          :port => 1
+                                        }
+                              }
+                        },
+        :"client" => {
+                    # VM box
+                    :box_conf => "centos/8",
+                    # VM CPU count
+                    :cpus => 1,
+                    # VM RAM size (Mb)
+                    :memory => 256,
+                    # networks
+                    :ip_addr => '192.168.10.10'
+                  }
+      }
 
-Vagrant.configure("2") do |config|
+      Vagrant.configure("2") do |config|
 
-  MACHINES.each do |boxname, boxconfig|
-      if Vagrant.has_plugin?("vagrant-timezone")
-            config.timezone.value = "Europe/Minsk"
-      end
-      config.vm.define boxname do |box|
-            box.vm.box = boxconfig[:box_conf]
-            box.vm.host_name = boxname.to_s
-            box.vm.network "private_network", ip: boxconfig[:ip_addr], virtualbox__intnet: "net1"
-            box.vm.provider "virtualbox" do |v|
-                        # Set VM RAM size, CPU count, add disks
-                                v.memory = boxconfig[:memory]
-                                v.cpus = boxconfig[:cpus]
-                                if boxconfig.key?(:diskv)
-                                needsController = false
-                                        boxconfig[:diskv].each do |dname, dconf|
-                                              unless File.exist?(dconf[:dfile])
-                                              v.customize ['createhd', '--filename', dconf[:dfile], '--variant', 'Fixed', '--size', dconf[:size]]
-                                              needsController = true
+        MACHINES.each do |boxname, boxconfig|
+            if Vagrant.has_plugin?("vagrant-timezone")
+                  config.timezone.value = "Europe/Minsk"
+            end
+            config.vm.define boxname do |box|
+                  box.vm.box = boxconfig[:box_conf]
+                  box.vm.host_name = boxname.to_s
+                  box.vm.network "private_network", ip: boxconfig[:ip_addr], virtualbox__intnet: "net1"
+                  box.vm.provider "virtualbox" do |v|
+                              # Set VM RAM size, CPU count, add disks
+                                      v.memory = boxconfig[:memory]
+                                      v.cpus = boxconfig[:cpus]
+                                      if boxconfig.key?(:diskv)
+                                      needsController = false
+                                              boxconfig[:diskv].each do |dname, dconf|
+                                                    unless File.exist?(dconf[:dfile])
+                                                    v.customize ['createhd', '--filename', dconf[:dfile], '--variant', 'Fixed', '--size', dconf[:size]]
+                                                    needsController = true
+                                                  end
+                                                end
+                                            if needsController == true
+                                                     v.customize ["storagectl", :id, "--name", "SATA", "--add", "sata" ]
+                                                     boxconfig[:diskv].each do |dname, dconf|
+                                                     v.customize ['storageattach', :id,  '--storagectl', 'SATA', '--port', dconf[:port], '--device', 0, '--type', 'hdd', '--medium', dconf[:dfile]]
+                                                 end
                                             end
-                                          end
-                                      if needsController == true
-                                               v.customize ["storagectl", :id, "--name", "SATA", "--add", "sata" ]
-                                               boxconfig[:diskv].each do |dname, dconf|
-                                               v.customize ['storageattach', :id,  '--storagectl', 'SATA', '--port', dconf[:port], '--device', 0, '--type', 'hdd', '--medium', dconf[:dfile]]
-                                           end
                                       end
-                                end
-            end
-            if boxname.to_s == "srvbackup"
-              box.vm.provision "shell", path: "srvbackup.sh"
-            end
-            box.vm.provision "shell",  inline: <<-SHELL
-                  mkdir -p /root/.ssh
-                  cp ~vagrant/.ssh/auth* /root/.ssh
-                  yum install -y --nogpgcheck epel-release
-                  SHELL
+                  end
+                  if boxname.to_s == "srvbackup"
+                    box.vm.provision "shell", path: "srvbackup.sh"
+                  end
+                  box.vm.provision "shell",  inline: <<-SHELL
+                        mkdir -p /root/.ssh
+                        cp ~vagrant/.ssh/auth* /root/.ssh
+                        yum install -y --nogpgcheck epel-release
+                        SHELL
 
+            end
+        end
       end
-  end
-end
 
 </details>
 
 ___
 
+
+
 **ДЗ по теме NETWORK 25 lesson**
 
+[Vagrantfile Network 25lesson](vagrantfile_repo/lesson25_Network/Vagrantfile)
 
 
+Расширеный вариант ДЗ с использованием ansible
 
-<details>
+      box.vm.provision :ansible_local do |ansible|
+       #Установка  коллекции community.general, для использования community.general.nmcli (nmcli) управление сетевыми устройствами.
+       ansible.galaxy_command = 'ansible-galaxy collection install community.general'
+       ansible.verbose = "vv"
+       ansible.install = "true"
+       #ansible.limit = "all"    <----- По умолчанию запускается только для конфигурируемой машины, но при параметре "ansible.limit = "all", для всех
+       ansible.tags = boxname.to_s
+       ansible.inventory_path = "./ansible/inventory/"
+       ansible.playbook = "./ansible/playbooks/routers.yml"
+       ansible.playbook = "./ansible/playbooks/servers.yml"
+       end
 
-<summary> Vagrantfile для стенда по ДЗ "Network" </summary>
+**_ansible.tags = boxname.to_s_** - тегируем в файле task/main.yml, роли ansible, команду на запуск скрипта, для конфигурации сетевой настройки тестового хоста:
 
-<!-- # -*- mode: ruby -*-
-# vim: set ft=ruby :
-# -*- mode: ruby -*-
-# vim: set ft=ruby : -->
-
-MACHINES = {
-:inetRouter => {
-        :box_name => "centos/7",
-        #:public => {:ip => '10.10.10.1', :adapter => 1},
-        :net => [
-                   {ip: '192.168.255.1', adapter: 2, netmask: "255.255.255.252", virtualbox__intnet: "router-net"},
-                ]
-  },
-  :centralRouter => {
-        :box_name => "centos/7",
-        :net => [
-                   {ip: '192.168.255.2', adapter: 2, netmask: "255.255.255.252", virtualbox__intnet: "router-net"},
-                   {ip: '192.168.0.1', adapter: 3, netmask: "255.255.255.240", virtualbox__intnet: "dir-net"},
-                   {ip: '192.168.0.33', adapter: 4, netmask: "255.255.255.240", virtualbox__intnet: "hw-net"},
-                   {ip: '192.168.0.65', adapter: 5, netmask: "255.255.255.192", virtualbox__intnet: "mgt-net"},
-                   {ip: '192.168.3.3', adapter: 6, netmask: "255.255.255.240", virtualbox__intnet: "office1-router"},
-                   {ip: '192.168.3.17', adapter: 7, netmask: "255.255.255.240", virtualbox__intnet: "office2-router"},
-                ]
-  },
-
-  :centralServer => {
-        :box_name => "centos/7",
-        :net => [
-                   {ip: '192.168.0.2', adapter: 2, netmask: "255.255.255.240", virtualbox__intnet: "dir-net"},
-                   {adapter: 3, auto_config: false, virtualbox__intnet: true},
-                   {adapter: 4, auto_config: false, virtualbox__intnet: true},
-                ]
-  },
-
-  :office1Router =>
-                  {
-        :box_name => "centos/7",
-        :net => [
-                   {ip: '192.168.2.1', adapter: 2, netmask: "255.255.255.192", virtualbox__intnet: "office1-dev"},
-                   {ip: '192.168.2.66', adapter: 3, netmask: "255.255.255.192", virtualbox__intnet: "office1-server"},
-                   {ip: '192.168.2.129', adapter: 4, netmask: "255.255.255.192", virtualbox__intnet: "office1-hw"},
-                   {ip: '192.168.3.4', adapter: 5, netmask: "255.255.255.240", virtualbox__intnet: "office1-router"},
-                   {ip: '192.168.2.193', adapter: 6, netmask: "255.255.255.192", virtualbox__intnet: "office1-mgt"},
-
-                  ]
-                },
-
-  :office2Router => {
-        :box_name => "centos/7",
-        :net => [
-                  {ip: '192.168.1.4', adapter: 2, netmask: "255.255.255.128", virtualbox__intnet: "office2-dev"},
-                   {ip: '192.168.1.129', adapter: 3, netmask: "255.255.255.192", virtualbox__intnet: "office2-server"},
-                   {ip: '192.168.1.193', adapter: 4, netmask: "255.255.255.192", virtualbox__intnet: "office2-hw"},
-                   {ip: '192.168.3.18', adapter: 5, netmask: "255.255.255.240", virtualbox__intnet: "office2-router"},
-                  ]
-                },
-
-  :office1Server => {
-          :box_name => "centos/7",
-          :net => [
-                  {ip: '192.168.2.67', adapter: 2, netmask: "255.255.255.192", virtualbox__intnet: "office1-server"},
-                  ]
-                },
-
-  :office2Server => {
-          :box_name => "centos/7",
-          :net => [
-                    {ip: '192.168.1.130', adapter: 2, netmask: "255.255.255.192", virtualbox__intnet: "office2-server"},
-                  ]
-                },
-
-}
-
-Vagrant.configure("2") do |config|
-
-  MACHINES.each do |boxname, boxconfig|
-
-    config.vm.define boxname do |box|
-
-        box.vm.box = boxconfig[:box_name]
-        box.vm.host_name = boxname.to_s
-
-        boxconfig[:net].each do |ipconf|
-          box.vm.network "private_network", ipconf
-        end
-
-        if boxconfig.key?(:public)
-          box.vm.network "public_network", boxconfig[:public]
-        end
-
-        box.vm.provision "shell", inline: <<-SHELL
-          mkdir -p ~root/.ssh
-                cp ~vagrant/.ssh/auth* ~root/.ssh
-        SHELL
-
-        case boxname.to_s
-        when "inetRouter"
-          box.vm.provision "shell", run: "always", inline: <<-SHELL
-            #sysctl net.ipv4.conf.all.forwarding=1
-            iptables -t nat -A POSTROUTING ! -d 192.168.0.0/16 -o eth0 -j MASQUERADE
-            touch /etc/sysconfig/network-scripts/route-eth1
-            echo "192.168.1.0/25 via 192.168.255.2" > /etc/sysconfig/network-scripts/route-eth1
-            echo "192.168.3.0/28 via 192.168.255.2" >> /etc/sysconfig/network-scripts/route-eth1
-            echo "192.168.3.16/28 via 192.168.255.2" >> /etc/sysconfig/network-scripts/route-eth1
-            echo "192.168.1.128/26 via 192.168.255.2" >> /etc/sysconfig/network-scripts/route-eth1
-            echo "192.168.1.192/26 via 192.168.255.2" >> /etc/sysconfig/network-scripts/route-eth1
-            echo "192.168.2.0/26 via 192.168.255.2" >> /etc/sysconfig/network-scripts/route-eth1
-            echo "192.168.2.64/26 via 192.168.255.2" >> /etc/sysconfig/network-scripts/route-eth1
-            echo "192.168.2.128/26 via 192.168.255.2" >> /etc/sysconfig/network-scripts/route-eth1
-            echo "192.168.2.192/26 via 192.168.255.2" >> /etc/sysconfig/network-scripts/route-eth1
-            echo "192.168.0.2/28 via 192.168.255.2" >> /etc/sysconfig/network-scripts/route-eth1
-            systemctl restart network
-            sysctl net.ipv4.conf.all.forwarding=1
-            SHELL
-        when "centralRouter"
-          box.vm.provision "shell", run: "always", inline: <<-SHELL
-            # sysctl net.ipv4.conf.all.forwarding=1
-            echo "DEFROUTE=no" >> /etc/sysconfig/network-scripts/ifcfg-eth0
-            echo "GATEWAY=192.168.255.1" >> /etc/sysconfig/network-scripts/ifcfg-eth1
-            # touch /etc/sysconfig/network-scripts/ifcfg-eth2:0
-            # echo "DEVICE=eth2:0" >> /etc/sysconfig/network-scripts/ifcfg-eth2:0
-            # echo "BOOTPROTO=static" >> /etc/sysconfig/network-scripts/ifcfg-eth2:0
-            # echo "IPADDR=192.168.3.3" >> /etc/sysconfig/network-scripts/ifcfg-eth2:0
-            # echo "NETMASK=255.255.255.224" >> /etc/sysconfig/network-scripts/ifcfg-eth2:0
-            # echo "ONBOOT=yes" >> /etc/sysconfig/network-scripts/ifcfg-eth2:0
-            touch /etc/sysconfig/network-scripts/route-eth5
-            touch /etc/sysconfig/network-scripts/route-eth6
-            echo "192.168.1.0/25 via 192.168.3.18" > /etc/sysconfig/network-scripts/route-eth6
-            echo "192.168.1.128/26 via 192.168.3.18" >> /etc/sysconfig/network-scripts/route-eth6
-            echo "192.168.1.192/26 via 192.168.3.18" >> /etc/sysconfig/network-scripts/route-eth6
-            echo "192.168.2.0/26 via 192.168.3.4" > /etc/sysconfig/network-scripts/route-eth5
-            echo "192.168.2.64/26 via 192.168.3.4" >> /etc/sysconfig/network-scripts/route-eth5
-            echo "192.168.2.128/26 via 192.168.3.4" >> /etc/sysconfig/network-scripts/route-eth5
-            echo "192.168.2.192/26 via 192.168.3.4" >> /etc/sysconfig/network-scripts/route-eth5
-            systemctl restart network
-            sysctl net.ipv4.conf.all.forwarding=1
-            SHELL
-        when "centralServer"
-          box.vm.provision "shell", run: "always", inline: <<-SHELL
-            echo "DEFROUTE=no" >> /etc/sysconfig/network-scripts/ifcfg-eth0
-            echo "GATEWAY=192.168.0.1" >> /etc/sysconfig/network-scripts/ifcfg-eth1
-            systemctl restart network
-            SHELL
-        when "office1Router"
-          box.vm.provision "shell", run: "always", inline: <<-SHELL
-            # sysctl net.ipv4.conf.all.forwarding=1
-            echo "DEFROUTE=no" >> /etc/sysconfig/network-scripts/ifcfg-eth0
-            echo "GATEWAY=192.168.3.3" >> /etc/sysconfig/network-scripts/ifcfg-eth4
-            systemctl restart network
-            sysctl net.ipv4.conf.all.forwarding=1
-            SHELL
-        when "office2Router"
-          box.vm.provision "shell", run: "always", inline: <<-SHELL
-            #sysctl net.ipv4.conf.all.forwarding=1
-            echo "DEFROUTE=no" >> /etc/sysconfig/network-scripts/ifcfg-eth0
-            echo "GATEWAY=192.168.3.17" >> /etc/sysconfig/network-scripts/ifcfg-eth4
-            systemctl restart network
-            sysctl net.ipv4.conf.all.forwarding=1
-            SHELL
-        when "office1Server"
-          box.vm.provision "shell", run: "always", inline: <<-SHELL
-          echo "DEFROUTE=no" >> /etc/sysconfig/network-scripts/ifcfg-eth0
-          echo "GATEWAY=192.168.2.66" >> /etc/sysconfig/network-scripts/ifcfg-eth1
-          systemctl restart network
-          SHELL
-        when "office2Server"
-          box.vm.provision "shell", run: "always", inline: <<-SHELL
-          echo "DEFROUTE=no" >> /etc/sysconfig/network-scripts/ifcfg-eth0
-          echo "GATEWAY=192.168.1.129" >> /etc/sysconfig/network-scripts/ifcfg-eth1
-          systemctl restart network
-          SHELL
-
-
-        end
-
-      end
-
-  end
-
-
-end
-
-
-
-
-
-
-
-
-
-
-
+      - name: 'Конфигурация office2Server'
+        script: office2Server.sh
+        tags: **office2Server**   <---- тегируем по имени хоста, чтоб при запуске  Vagrant использовать имя хоста как тег и запускать конфигурации только нужного хоста.
 
 ___
 
+**ДЗ по теме IPTABLES 27 lesson**
 
-##                                                              Конфиг параметры
+  [Vagrantfile Network 27lesson](vagrantfile_repo/lesson27_IPTABLES/Vagrantfile)
+
+    _**Отключаем звук в настройках VM, при появлении ошибки. Всё просто, при запуске вагрантфайла и конфигурации машины: **_
+
+        Vagrant.configure("2") do |config|
+
+        config.vm.provider "virtualbox" do |v|
+        v.customize ["modifyvm", :id, "--audio", "none"]   <---- Отключили звук, тут же и настроим другие параметры VM если нужно:
+        v.memory = 256
+        v.cpus = 1
+          end**
+          .......
+          ........
+        MACHINES.each do |boxname, boxconfig|
+          config.vm.synced_folder "./", "/vagrant", type: "rsync", rsync__auto: true, rsync__exclude: ['./hddvm, README.md']
 
 
-1.   Проброс симлинков
+##             Конфиг параметры
 
--   Вам просто нужно добавить параметр setextradata для каждой общей папки mount:
 
-*           config.vm.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/k5", "1"]    < ---------- возможность пробрасывать симлинки из хостовой папки,  в папку которая  
-                                                                                                                                  монтируется в        гостевую систему
-2. Плагин для настройки часового пояса, при старте Vagrantfile
+
+### Общая конфигурация виртуальной машины в вагрант-е
+
+- Плагин для настройки часового пояса, при старте Vagrantfile
 
           vagrant plugin install vagrant-timezone
 
@@ -554,17 +394,24 @@ ___
               # ... other stuff
             end
 
-3. Дополнителные опции синхронизации каталога с хостовой машины в гостевую.
+
+
+**vagrant reload --no-provision**
+
+
+### Монтирование папок с хостовой системы
+
+1.  Дополнителные опции синхронизации каталога с хостовой машины в гостевую.
 
 Дополнительные опции:
 
-**_disabled_** - если указать True, то синхронизация будет отключена. Удобно, если нам не нужна «изкоробочная» синхронизация.  
-**_mount_options_** - дополнительные параметры, которые будут переданы команде mount при монтировании  
-**_type_** - полезная опция, которая позволяет выбрать тип синхронизации. Доступны следующие варианты:  
+**_disabled_** - если указать True, то синхронизация будет отключена. Удобно, если нам не нужна «изкоробочная» синхронизация.
+**_mount_options_** - дополнительные параметры, которые будут переданы команде mount при монтировании
+**_type_** - полезная опция, которая позволяет выбрать тип синхронизации. Доступны следующие варианты:
 - NFS (тип NFS доступен только для Linux-host!)
 - rsync
 - SMB (тип SMB доступен только для Windows-host!)
-- VirtualBox  
+- VirtualBox
 
 >для Linux-гостей использовать rsync - этот тип не требует дополнений гостевых систем,  автоматически установить rsync на всех гостей. Также, доступны дополнительные плюшки, такие как vagrant rsync и vagrant rsync-auto
 
@@ -572,14 +419,14 @@ ___
 
 **_id_** - имя, которое будет показываться при команде mount в гостевой
 
-Подробнее вариант rsync:  
+Подробнее вариант rsync:
 
 Первое - этот тип работает только в одну сторону. Каталоги, которые синхронизированы через rsync синхронизируются автоматически только один раз - при инициализации машины (vagrant up\vagrant reload).
  Принудительно синхронизировать можно двумя путями:
 
       vagrant rsync
       vagrant rsync-auto
-"vagrant rsync" --  вариант запускается один раз (синхронизировал и всё).  
+"vagrant rsync" --  вариант запускается один раз (синхронизировал и всё).
 
 >Имейте ввиду, что если вы сделали изменения в Vagrantfile в области синхронизации, то вам необходимо перед vagrant rsync сделать vagrant reload.
 
@@ -589,6 +436,36 @@ ___
 
 Пример проброса папки в гостевую машину:
 
-    config.vm.synced_folder "scripts/", "/vagrant", type: "rsync", rsync__auto: true, rsync__exclude: ['./hddvm, 'README.md'']
+    config.vm.synced_folder "scripts/", "/vagrant", type: "rsync", rsync__auto: true, rsync__exclude: ['./hddvm, README.md']
 
     Пробрасываем папку scripts с хостовой системы, лежащую в папке с Vagrantfile, тип синхронизации rsync, разрешить rsync__auto, исключить каталог hddvm, файл README.md лежащие в той же директории.
+
+2.  Проброс симлинков
+
+-   Вам просто нужно добавить параметр setextradata для каждой общей папки mount:
+
+*           config.vm.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/k5", "1"]    < ---------- возможность пробрасывать симлинки из хостовой папки,  в папку которая
+                                                                                                                                  монтируется в        гостевую систему
+
+___
+
+### Сетевые настройки
+
+
+- vb.customize ['modifyvm', :id, '--nicbootprio2', '1'] - модификация ( проверено в virtualbox) загрузки по сети,  со второй сетевой карты
+
+- vb.customize ['modifyvm', :id, '--cableconnected2', 'on'] - подключение или отключение сетевого кабеля при загрузке, на сетевую карточку
+
+
+### Vagrant+Ansible
+
+При использовании Ansible в качестве провижинга, может быть два варианта запуска:
+
+Ansible выполняется на хостовой машине:
+- **_:ansible_ ( box.vm.provision :ansible do |ansible| )**
+
+Ansible выполняется на гостевой системе:
+- **:ansible_local (box.vm.provision :ansible_local do |ansible|)**
+
+Запуск только теггированной задачи:
+- **ansible.tags = boxname.to_s**
