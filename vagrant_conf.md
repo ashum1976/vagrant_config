@@ -28,21 +28,17 @@ ___
 
     Vagrant.configure(2) do |config|
             config.vm.box = "ashum1976/centos7_kernel_5.10"
-          #config.vm.box = "centos/7"
-
-
+            #config.vm.box = "centos/7"
             config.vm.provider "virtualbox" do |v|
                 v.memory = 256
                 v.cpus = 1
             end
-
-            config.vm.define "nfs_server" do |nfss|                                                         <------ задаём параметры box-a  "nfs_server"
+            config.vm.define "nfs_server" do |nfss|                                    <------ задаём параметры box-a  "nfs_server"
                 #nfss.vm.synced_folder "./sync_data_server", "/home/vagrant/mnt"
                 nfss.vm.network "private_network", ip: "192.168.50.10", virtualbox__intnet: "net1"   <----- добавляем ещё сетевую карту с нужным IP
-                nfss.vm.hostname = "nfssrv"                                                                        <-------- Задаём имя нашей создаваемой виртуальной машины hostname
-                nfss.vm.provision "shell", path: "nfss_script.sh"                                            <------ Провижинг используя готовый скрипт, который будет находится в одной папке с Vagrant файлом
+                nfss.vm.hostname = "nfssrv"                                     <-------- Задаём имя нашей создаваемой виртуальной машины hostname
+                nfss.vm.provision "shell", path: "nfss_script.sh"      <------ Провижинг используя готовый скрипт, который будет находится в одной папке с Vagrant файлом
             end
-
             config.vm.define "nfs_client" do |nfsc|
                 #nfsc.vm.synced_folder "./sync_data_client", "/home/vagrant/mnt"
                 nfsc.vm.network "private_network", ip: "192.168.50.11", virtualbox__intnet: "net2"
@@ -51,8 +47,6 @@ ___
             end
 
 end
-
-
 
 </details>
 
@@ -84,13 +78,13 @@ ___
            config.vm.define boxname do |box|
                 box.vm.box = boxconfig[:box_name]
                 box.vm.host_name = boxname.to_s
->Создадим сетевой интерфейс, внешний, будет доступен на хостовой машине, где тоже создастся сетевой интерфейс из этой же подсети ( 192.168.11.0/24):
+
+                >Создадим сетевой интерфейс, внешний, будет доступен на хостовой машине, где тоже создастся сетевой интерфейс из этой же подсети ( 192.168.11.0/24):
 
                 box.vm.network "private_network", ip: boxconfig[:ip_addr], virtualbox__extnet: "net1"
                 box.vm.provider :virtualbox do |vb|
                 vb.customize ["modifyvm", :id, "--memory", "256"]
                 vb.name = boxname.to_s
-
                 end
 
                 box.vm.provision "shell", inline: <<-SHELL
@@ -361,18 +355,75 @@ ___
   [Vagrantfile Network 27lesson](vagrantfile_repo/lesson27_IPTABLES/Vagrantfile)
 
     _**Отключаем звук в настройках VM, при появлении ошибки. Всё просто, при запуске вагрантфайла и конфигурации машины: **_
+      _Можно конфигурить как в начальной секции, так и при конфигурации в цикле по каждой виртуальной машине_
 
         Vagrant.configure("2") do |config|
 
-        config.vm.provider "virtualbox" do |v|
-        v.customize ["modifyvm", :id, "--audio", "none"]   <---- Отключили звук, тут же и настроим другие параметры VM если нужно:
+        if Vagrant.has_plugin?("vagrant-timezone")
+                config.timezone.value = "Europe/Minsk" или config.timezone.value = "UTC" <---- Выбрать временную зону UTC или Europe/Minsk
+              end
+
+        >config.vm.provider "virtualbox" do |v|
+        v.customize ["modifyvm",<details> :id, "--audio", "none"]   <---- Отключили звук, тут же и настроим другие параметры VM если нужно:
         v.memory = 256
         v.cpus = 1
-          end**
+          end
           .......
           ........
+
         MACHINES.each do |boxname, boxconfig|
           config.vm.synced_folder "./", "/vagrant", type: "rsync", rsync__auto: true, rsync__exclude: ['./hddvm, README.md']
+          config.vm.define boxname do |box|
+
+              >config.vm.provider "virtualbox" do |v|
+                  if boxname.to_s == "<box name>"
+                      v.customize ["modifyvm", :id, "--audio", "none"]   <---- Отключили звук, тут же и настроим другие параметры VM если нужно:
+                      v.memory = 256
+                      v.cpus = 1
+                      end
+                  if boxname.to_s == "<box name2>"
+                      v.customize ["modifyvm", :id, "--audio", "none"]   <---- Отключили звук, тут же и настроим другие параметры VM если нужно:
+                      v.memory = 1024
+                      v.cpus = 2
+                      end
+              v.customize ["modifyvm", :id, "--audio", "none"]   <---- Отключили звук, тут же и настроим другие параметры VM если нужно:
+              v.memory = 256
+              v.cpus = 1
+              end
+
+
+
+          ......
+          .......
+
+
+**ДЗ по теме MySQL_Backup 40 lesson**
+
+[Vagrantfile Network 27lesson](vagrantfile_repo/lesson40_MySQL/Vagrantfile)
+
+
+
+Версия vagrant-a 2.2.16:
+
+<details>
+
+.....
+......
+......
+config.vm.define boxname do |box|
+        box.vm.provider "virtualbox" do |v|
+            if boxname.to_s == "srvmysql"
+              v.customize ["modifyvm", :id, "--audio", "none", "--memory", "1024", "--cpus", "2" ] <--- Настройка параметров virtualbox-a
+            end
+            if boxname.to_s == "backupmysql"            <------- Для определённой машины
+              v.customize ["modifyvm", :id, "--audio", "none", "--memory", "512", "--cpus", "1" ]  <--- Настройка параметров virtualbox-a
+            end
+        end
+.......
+........
+........
+
+</details>
 
 
 ##             Конфиг параметры
@@ -451,11 +502,13 @@ ___
 
 ### Сетевые настройки
 
+- config.vm.provider "virtualbox" do |vb|
+  vb.customize ['modifyvm', :id, '--nicbootprio2', '1'] - модификация ( проверено в virtualbox) загрузки по сети,  со второй сетевой карты
 
-- vb.customize ['modifyvm', :id, '--nicbootprio2', '1'] - модификация ( проверено в virtualbox) загрузки по сети,  со второй сетевой карты
+- config.vm.provider "virtualbox" do |vb|
+  vb.customize ['modifyvm', :id, '--cableconnected2', 'on'] - подключение или отключение сетевого кабеля при загрузке, на сетевую карточку
 
-- vb.customize ['modifyvm', :id, '--cableconnected2', 'on'] - подключение или отключение сетевого кабеля при загрузке, на сетевую карточку
-
+- mac: "080027ca8609" {ip: '192.168.224.17', netmask: "255.255.255.240", adapter: 3, virtualbox__intnet: "router-net_4", mac: "080027ca8609"}, - установка mac-адреса на интерфейс
 
 ### Vagrant+Ansible
 
@@ -465,7 +518,15 @@ Ansible выполняется на хостовой машине:
 - **_:ansible_ ( box.vm.provision :ansible do |ansible| )**
 
 Ansible выполняется на гостевой системе:
-- **:ansible_local (box.vm.provision :ansible_local do |ansible|)**
+- **_:ansible_local_ (box.vm.provision :ansible_local do |ansible|)**
 
 Запуск только теггированной задачи:
 - **ansible.tags = boxname.to_s**
+
+Не устанавливать Ansible на гостевую машину. Например если ставится версия Ansible через Vagrant скрипт (ДЗ по репликации MySQL)
+- **ansible.install = "false"**
+
+    >     Установка Ansible в Vagrantfile: 
+          dnf -y --nogpgcheck install python39 epel-release
+	        dnf -y --nogpgcheck install sshpass
+	        pip3 install ansible
